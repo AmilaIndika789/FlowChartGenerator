@@ -26,7 +26,7 @@ for cnt in contours:
         # 		if x[...] > thres:
         # 			x[...] = 0
         # print(type(cnt),cnt, cnt.shape)
-        cv2.fillPoly(dst,pts=[approx],color=(0,255,0))
+        cv2.fillPoly(dst,pts=[approx],color=(255,255,255))
         cv2.polylines(dst,[approx],True,(255,255,255))
         x = approx.ravel()[0]
         y = approx.ravel()[1]
@@ -42,15 +42,15 @@ for cnt in contours:
             cv2.putText(dst, "Circle", (x,y), font, 1, (0))
 
 # kernel = np.ones((5,5), np.float32)/25
-kernel = np.ones((10,10),np.float32)
-dilation = cv2.dilate(dst,kernel,iterations = 1)
-cv2.imshow("dilate",dilation)
+kernel = np.ones((30,30),np.float32)
+erosion = cv2.erode(dst,kernel,iterations = 1)
+cv2.imshow("erode",erosion)
 # cv2.imshow("Threshold", threshold)
 # opening = cv2.morphologyEx(threshold, cv2.MORPH_OPEN, kernel)
 # cv2.imshow("opening", opening)
 # dst = cv2.filter2D(threshold, -1, kernel)
 
-cv2.imshow("Original Image", img)
+# cv2.imshow("Original Image", img)
 cv2.imshow("Edges detected Image", dst)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
