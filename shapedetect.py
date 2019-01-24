@@ -28,29 +28,40 @@ for cnt in contours:
         # print(type(cnt),cnt, cnt.shape)
         cv2.fillPoly(dst,pts=[approx],color=(255,255,255))
         cv2.polylines(dst,[approx],True,(255,255,255))
-        x = approx.ravel()[0]
-        y = approx.ravel()[1]
+        
+def findShape(image):
+    _, contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    for cnt in contours:
+        approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
+        cv2.drawContours(image, [approx], 0, (0), 5)
+        x = approx.ravel()[0]-10
+        y = approx.ravel()[1]-10
         if len(approx) == 3:
-            cv2.putText(dst, "Triangle", (x,y), font, 1, (0))
+            cv2.putText(image, "Triangle", (x,y), font, 1, (0))
         elif len(approx) == 4:
-            cv2.putText(dst, "Rectangle", (x,y), font, 1, (0))
+            cv2.putText(image, "quadrilateral", (x,y), font, 1, (0))
         elif len(approx) == 5:
-            cv2.putText(dst, "Pentagon", (x,y), font, 1, (0))
-        elif 6 < len(approx) < 15:
-            cv2.putText(dst, "Ellipse", (x,y), font, 1, (0))
+            cv2.putText(image, "Pentagon", (x,y), font, 1, (0))
+        # elif 6 < len(approx) < 15:
+            # cv2.putText(image, "Ellipse", (x,y), font, 1, (0))
         else:
-            cv2.putText(dst, "Circle", (x,y), font, 1, (0))
+            cv2.putText(image, "Circle", (x,y), font, 1, (0))
+    return image
+
 
 # kernel = np.ones((5,5), np.float32)/25
 kernel = np.ones((30,30),np.float32)
 erosion = cv2.erode(dst,kernel,iterations = 1)
-cv2.imshow("erode",erosion)
+erosion = 255 - erosion
+erode = findShape(erosion)
+cv2.imshow("erode",erode)
+
 # cv2.imshow("Threshold", threshold)
 # opening = cv2.morphologyEx(threshold, cv2.MORPH_OPEN, kernel)
 # cv2.imshow("opening", opening)
 # dst = cv2.filter2D(threshold, -1, kernel)
 
-# cv2.imshow("Original Image", img)
+cv2.imshow("Original Image", img)
 cv2.imshow("Edges detected Image", dst)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
