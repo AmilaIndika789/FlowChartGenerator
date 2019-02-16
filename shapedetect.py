@@ -2,12 +2,25 @@ import cv2
 import numpy as np
 from scipy.ndimage.filters import gaussian_filter
 
-img = cv2.imread("../Images/flowchart4.jpg", cv2.IMREAD_GRAYSCALE)
-_, threshold = cv2.threshold(img,128,255,cv2.THRESH_BINARY)
-threshold = 255-threshold
+img = cv2.imread("./Images/flowchart2.jpg", cv2.IMREAD_GRAYSCALE)
+# _, threshold = cv2.threshold(img,128,255,cv2.THRESH_BINARY)
+img_xLen, img_yLen = img.shape
+#Binarize the image
+for cols in range(0,img_yLen-1):
+    for rows in range(0, img_xLen-1):
+        if(img[rows][cols] < 128):
+            img[rows][cols] = 0
+        else:
+            img[rows][cols] = 255
+threshold = img                     #Thresholded image
+threshold = 255-threshold           #Invert images
 cv2.imshow("Threshold", threshold)
+
 _, contours, hierarchy = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 dst = cv2.GaussianBlur(threshold,(5,5),0)
+# GaussianKernel = cv2.getGaussianKernel(ksize=5)
+# print(GaussianKernel)
+
 
 font = cv2.FONT_HERSHEY_COMPLEX
 
@@ -52,6 +65,7 @@ def findShape(image):
 # kernel = np.ones((5,5), np.float32)/25
 kernel = np.ones((30,30),np.float32)
 erosion = cv2.erode(dst,kernel,iterations = 1)
+# erosion = cv2.morphologyEx(dst,cv2.MORPH_OPEN, kernel)
 erosion = 255 - erosion
 erode = findShape(erosion)
 cv2.imshow("erode",erode)

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
  
-img = cv2.imread("../Images/flowchart4.jpg", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread("./Images/flowchart4.jpg", cv2.IMREAD_GRAYSCALE)
 _, threshold = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
 _, contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
